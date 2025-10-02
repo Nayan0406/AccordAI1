@@ -92,11 +92,17 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Accord AI Backend running on port ${PORT}`);
-  console.log(`📱 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL}`);
-});
+// For Vercel serverless functions, export the app
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  // For local development, start the server
+  app.listen(PORT, () => {
+    console.log(`🚀 Accord AI Backend running on port ${PORT}`);
+    console.log(`📱 Environment: ${process.env.NODE_ENV}`);
+    console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
