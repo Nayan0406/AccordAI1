@@ -90,27 +90,27 @@ app.use('*', (req, res) => {
   });
 });
 
+// Export the app for Vercel serverless functions
+module.exports = app;
+
 const PORT = process.env.PORT || 5000;
 
-// For Vercel serverless functions, export the app
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
-  // For local development, start the server
+// Only start the server if not in Vercel environment
+if (!process.env.VERCEL && !process.env.VERCEL_ENV) {
   app.listen(PORT, () => {
     console.log(`🚀 Accord AI Backend running on port ${PORT}`);
     console.log(`📱 Environment: ${process.env.NODE_ENV}`);
     console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL}`);
   });
+
+  // Graceful shutdown for local development
+  process.on('SIGTERM', () => {
+    console.log('👋 SIGTERM received, shutting down gracefully');
+    process.exit(0);
+  });
+
+  process.on('SIGINT', () => {
+    console.log('👋 SIGINT received, shutting down gracefully');
+    process.exit(0);
+  });
 }
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('👋 SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('👋 SIGINT received, shutting down gracefully');
-  process.exit(0);
-});
