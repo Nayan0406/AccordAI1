@@ -89,6 +89,6 @@ const userSchema = new mongoose.Schema({
 
 // Index for faster queries
 userSchema.index({ firebaseUid: 1 });
-userSchema.index({ email: 1 });
+// Removed duplicate email index since unique: true already creates it
 
 module.exports = mongoose.model('User', userSchema);
