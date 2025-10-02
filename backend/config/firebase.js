@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-require('dotenv').config();
+// require('dotenv').config(); // Not needed in Vercel
 
 // For development, we'll use a mock Firebase setup
 // In production, you would need to download the real service account key from Firebase Console

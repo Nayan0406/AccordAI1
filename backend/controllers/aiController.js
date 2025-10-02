@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config(); // Not needed in Vercel
 const fetch = require('node-fetch');
 const multer = require('multer');
 const pdfParse = require('pdf-parse');

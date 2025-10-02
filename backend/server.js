@@ -3,19 +3,26 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+// require('dotenv').config(); // Vercel handles env vars automatically
 
 const connectDB = require('./config/database');
-const fetch = require('node-fetch');
 
 const app = express();
 
-// Connect to MongoDB (optional)
-connectDB().then(() => {
-  console.log('✅ Database connection initialized');
-}).catch((error) => {
-  console.log('⚠️ Database connection failed, using fallback storage');
-});
+// Lazy database connection for serverless
+let dbConnected = false;
+const ensureDBConnection = async () => {
+  if (!dbConnected && process.env.MONGODB_URI) {
+    try {
+      const connectDB = require('./config/database');
+      await connectDB();
+      dbConnected = true;
+      console.log('✅ Database connection initialized');
+    } catch (error) {
+      console.log('⚠️ Database connection failed, using fallback storage');
+    }
+  }
+};
 
 // Security middleware
 app.use(helmet());
@@ -46,6 +53,12 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Ensure database connection for API routes
+app.use('/api', async (req, res, next) => {
+  await ensureDBConnection();
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

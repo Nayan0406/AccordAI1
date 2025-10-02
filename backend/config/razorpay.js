@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config(); // Not needed in Vercel
 const Razorpay = require('razorpay');
 
 // Determine if we're in production
